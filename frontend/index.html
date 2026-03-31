@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Password Manager</h1>
+        
+        <div class="form-section">
+            <h2>Add New Password</h2>
+            <input type="text" id="site" placeholder="Site">
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="generatePassword()">Generate Password</button>
+            <button onclick="addPassword()">Add Password</button>
+        </div>
+
+        <p id="generatedPassword" class="generated-password"></p>
+
+    </div>
+    <ul id="passwordList" class="password-list"></ul>
+    <script src="app.js"></script>
+</body>
+</html>
