@@ -1,12 +1,21 @@
-from flask import Flask, jsonify, request
-from flask_cors import CORS
+import logging
 import sqlite3
 import os
 import random
 import string
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+from dotenv import load_dotenv
+from cryptography.fernet import Fernet
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(BASE_DIR, 'passwords.db')
+
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, '.env'))
+
+FERNET_KEY = os.getenv('SECRET_KEY')
+cipher = Fernet(FERNET_KEY)
 
 def init_db():
     conn = sqlite3.connect(DATABASE)
@@ -31,15 +40,6 @@ def generate_password(length=12):
     password = ''.join(random.choice(characters) for _ in range(length))
     return password
 
-#TODO: Implement encryption and decryption for stored passwords
-#def encrypt(password):
-#    # Placeholder for encryption logic
-#    return password  # In a real application, implement proper encryption here
-#
-#def decrypt(encrypted_password):
-#    # Placeholder for decryption logic
-#    return decrypted_password  # In a real application, implement proper decryption here
-
 @app.route('/', methods=['GET'])
 def home():
     return "Welcome to the Password Manager API!"
@@ -52,11 +52,12 @@ def get_password():
 @app.route('/passwords', methods=['POST'])
 def add_password():
     data = request.json
-    
+    encrypted_password = cipher.encrypt(data.get('password').encode())
+    logging.debug(f"Encrypted password: {encrypted_password}")
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     cursor.execute('INSERT INTO passwords (site, username, password) VALUES (?, ?, ?)',
-                   (data.get('site'), data.get('username'), data['password']))
+                   (data.get('site'), data.get('username'), encrypted_password))
     conn.commit()
     conn.close()
     return jsonify({'message': 'Password added successfully'})
@@ -77,7 +78,7 @@ def get_passwords():
             'id': password[0],
             'site': password[1],
             'username': password[2],
-            'password': password[3]
+            'password': cipher.decrypt(password[3]).decode()
         })
 
     return result

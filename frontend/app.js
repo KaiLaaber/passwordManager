@@ -20,7 +20,9 @@ async function addPassword(){
     })
 
     const data = await res.json()
+    loadPasswords()
     console.log(data)
+
 }
 
 async function getPasswords(){
