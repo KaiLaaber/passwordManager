@@ -3,7 +3,7 @@ import sqlite3
 import os
 import random
 import string
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
@@ -12,9 +12,9 @@ from cryptography.fernet import Fernet
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(BASE_DIR, 'passwords.db')
 
-load_dotenv(dotenv_path=os.path.join(BASE_DIR, '.env'))
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../app/.env'))
 
-FERNET_KEY = os.getenv('SECRET_KEY')
+FERNET_KEY = os.getenv('SECRET_KEY').encode()
 cipher = Fernet(FERNET_KEY)
 
 def init_db():
@@ -41,8 +41,8 @@ def generate_password(length=12):
     return password
 
 @app.route('/', methods=['GET'])
-def home():
-    return "Welcome to the Password Manager API!"
+def index():
+    return render_template('index.html')
 
 @app.route('/generate-password', methods=['GET'])
 def get_password():
