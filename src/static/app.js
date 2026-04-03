@@ -1,9 +1,12 @@
 
 async function generatePassword(){
-    const res = await fetch("http://127.0.0.1:5000/generate-password")
+    const res = await fetch('/generate-password')
     const data = await res.json()
-    
-    document.getElementById('generatedPassword').innerText = data.password
+
+    const generatedPassword = document.getElementById('generatedPassword')
+    if (generatedPassword) {
+        generatedPassword.innerText = data.password
+    }
 }
 
 async function addPassword(){
@@ -11,13 +14,18 @@ async function addPassword(){
     const username = document.getElementById('username').value
     const password = document.getElementById('password').value
 
-    const res = await fetch("http://127.0.0.1:5000/passwords", {
+    const res = await fetch('/passwords', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({ site, username, password })
     })
+
+    if (res.status === 401) {
+        window.location.href = '/login'
+        return
+    }
 
     const data = await res.json()
     loadPasswords()
@@ -26,7 +34,7 @@ async function addPassword(){
 }
 
 async function getPasswords(){
-    const res = await fetch("http://127.0.0.1:5000/passwords", {
+    const res = await fetch('/passwords', {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -38,15 +46,25 @@ async function getPasswords(){
 }
 
 async function loadPasswords(){
-    const res = await fetch("http://127.0.0.1:5000/passwords", {
+    const passwordList = document.getElementById('passwordList')
+    if (!passwordList) {
+        return
+    }
+
+    const res = await fetch('/passwords', {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
     });
+
+    if (res.status === 401) {
+        window.location.href = '/login'
+        return
+    }
+
     const data = await res.json()
 
-    const passwordList = document.getElementById('passwordList')
     passwordList.innerHTML = '';
 
     data.forEach(item => {
@@ -60,7 +78,9 @@ async function loadPasswords(){
 
 function displayPasswords(){
     const passwordList = document.getElementById('passwordList');
-    passwordList.style.display = 'block';
+    if (passwordList) {
+        passwordList.style.display = 'block';
+    }
 }
 
-window.onload = loadPasswords();
+window.onload = loadPasswords;
