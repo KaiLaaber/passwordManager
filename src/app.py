@@ -3,7 +3,7 @@ import sqlite3
 import os
 import random
 import string
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request, render_template, redirect, url_for
 from flask_cors import CORS
 from dotenv import load_dotenv
 from cryptography.fernet import Fernet
@@ -12,11 +12,7 @@ from cryptography.fernet import Fernet
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(BASE_DIR, 'passwords.db')
 
-print(f"Base directory: {BASE_DIR}")
-
 load_dotenv(dotenv_path=os.path.join(BASE_DIR, '.env'))
-
-print(os.getenv('SECRET_KEY'))
 
 FERNET_KEY = os.getenv('SECRET_KEY').encode()
 cipher = Fernet(FERNET_KEY)
