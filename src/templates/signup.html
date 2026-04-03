@@ -9,6 +9,9 @@
 <body>
     <div class="register-container">
         <h1>Sign Up</h1>
+        {% if error %}
+        <p class="message error">{{ error }}</p>
+        {% endif %}
         <form method="POST" action="{{ url_for('register') }}">
             <div class="form-group">
                 <label for="username">Username:</label>
@@ -26,5 +29,4 @@
         <a href="{{ url_for('login') }}">Already have an account?</a>
     </div>
 </body>
-<script src="{{ url_for('static', filename='app.js') }}"></script>
 </html>
