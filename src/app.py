@@ -41,6 +41,33 @@ def generate_password(length=12):
     return password
 
 @app.route('/', methods=['GET'])
+def root():
+    return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+
+    # Placeholder login flow until auth is implemented.
+    return redirect(url_for('index'))
+
+@app.route('/signup', methods=['GET'])
+def signup():
+    return render_template('signup.html')
+
+@app.route('/register', methods=['POST'])
+def register():
+    password = request.form.get('password', '')
+    confirm_password = request.form.get('confirm_password', '')
+
+    if password != confirm_password:
+        return 'Passwords do not match', 400
+
+    # Placeholder register flow until user persistence is implemented.
+    return redirect(url_for('login'))
+
+@app.route('/manager', methods=['GET'])
 def index():
     return render_template('index.html')
 
