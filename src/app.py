@@ -12,7 +12,11 @@ from cryptography.fernet import Fernet
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE = os.path.join(BASE_DIR, 'passwords.db')
 
-load_dotenv(dotenv_path=os.path.join(BASE_DIR, '../app/.env'))
+print(f"Base directory: {BASE_DIR}")
+
+load_dotenv(dotenv_path=os.path.join(BASE_DIR, '.env'))
+
+print(os.getenv('SECRET_KEY'))
 
 FERNET_KEY = os.getenv('SECRET_KEY').encode()
 cipher = Fernet(FERNET_KEY)
